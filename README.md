@@ -18,5 +18,12 @@ Our system will allow:
 
 In addition, adding the feature has a business advantage for LinkedIn in that they will be able to collaborate with sites that offer courses (for example Coursera) and charge a fee for it
 
-for i in range(5)
+# step 1: downaload the linkdin\profiles data
+
+   ```bash
+    from pyspark.sql.functions import col, size
+    profiles = spark.read.parquet('/linkedin/people')
+    profiles.display()
+
+   ```
 
