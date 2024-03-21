@@ -22,22 +22,29 @@ In addition, adding the feature has a business advantage for LinkedIn in that th
 How are we going to implement this idea?
 
 first define:
-Education.field- the key field under the column Education in linkedin/people table
-General subject - the subject according to which we would like to classify the profiles, i.e. we will classify each record if it belongs to any subject and subject according to Education.field
+Education.field- the key field under the column Education in linkedin/people table.
+
+General subject - the subject according to which we would like to classify the profiles, i.e. we will classify each record if it belongs to any subject and subject according to Education.field.
+
 Examples of General subject:
 Mathematics, physics, education and more..
+
 Later for these general subjects we will collect courses on their subject.
 
 We will classify field.Education according to each General subject (for example, mathematics, philosophy, etc.).
 We will go over all the General subject and for each General subject we will create two types of labels:
+
 Label 1 - to which all the records that are under the general subject will belong.
+
 Label 0 - records that belong to another general topic will belong to it.
+
 We will do this for any general topic.
 
 How will we categorize the data into the above labels?
 We will run an example for the simplicity of the explanation, for example now we would like to classify to the general topic
 "medicine" records to 0 or 1
 We will distinguish between two types of records:
+
 1. Records that can be unequivocally determined to which general subject they belong
  (for example if 'medicine= 'field.Education ), it obviously belongs to the general subject of medicine.
   We will also add to these records a number of topics included in medicine (for example if 'field.Education'=doctor,nurse.. )
