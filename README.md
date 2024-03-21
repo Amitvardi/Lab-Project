@@ -1,5 +1,7 @@
-# Lab-Project
+# Matching courses automatically to LinkedIn users
+Amit Vardi, Lihi tal, Ron Shahar
 
+# Overview
 Many people with different fields of education use the LinkedIn platform in order to find a job, improve their knowledge and connect with people with common professional interests.
 
 Today LinkedIn does not offer practical professional development such as courses in the relevant educational fields.
@@ -15,4 +17,6 @@ Our system will allow:
 
 
 In addition, adding the feature has a business advantage for LinkedIn in that they will be able to collaborate with sites that offer courses (for example Coursera) and charge a fee for it
+
+for i in range(5)
 
