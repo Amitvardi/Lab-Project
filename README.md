@@ -18,8 +18,8 @@ Our system will allow:
 
 In addition, adding the feature has a business advantage for LinkedIn in that they will be able to collaborate with sites that offer courses (for example Coursera) and charge a fee for it
 
-# Our plan:
-How are we going to implement this idea?
+# Our plan :
+How are we going to implement this idea? 
 
 first define:
 
