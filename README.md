@@ -227,7 +227,7 @@ computer_profiles = filtered_profiles.filter(
 print(computer_profiles.count())
 
 ```
-# step 4 - creating type 1 records and compute cosine similarity for each general subject:
+# step 4 - creating type 1 records (the training data) and compute cosine similarity for each general subject:
 
 For each record, we calculated the cosine similarity between the education.field column and the general topic. At the end, we calculated an average of the cosine similarity values ​​for all the words belonging to that education.field on which we performed a split in step 2
 
@@ -300,6 +300,335 @@ teaching=create_labels_compute_cosine(teaching_profiles,Physics_profiles,medicin
 food=create_labels_compute_cosine(food_profiles,Physics_profiles,medicine_profiles,marketing_economics_profiles,social_sciences_profiles,teaching_profiles,math_profiles,computer_profiles,"food")
 
 computer=create_labels_compute_cosine(computer_profiles,Physics_profiles,medicine_profiles,marketing_economics_profiles,social_sciences_profiles,teaching_profiles,food_profiles,math_profiles,"computer")
+
+```
+# step 5 - creating test data:
+
+We do the same process we did for the training data in step 4 but without creating labels.
+For each record, we calculated the cosine similarity between the education.field column and the general topic. At the end, we calculated an average of the cosine similarity values ​​for all the words belonging to that education.field .
+
+In the end we filter the data frame to relevant columns.
+
+```bash
+
+def compute_cosine(df,field):
+    field_vector=word2vec_model[field]
+    cosine_similarity_udf = udf(calculate_cosine_similarity, DoubleType())
+    word_vector_literal = np.array(field_vector).tolist()
+    word_vector_col = F.array([F.lit(x) for x in word_vector_literal])
+    total_df = df.withColumn("cosine_sim_" + field, cosine_similarity_udf(col("word_vector"), word_vector_col))
+    return total_df
+
+def compute_avg_cosine_for_all_columns(df):
+    cosine_columns= [col for col in df.columns if "cosine" in col]
+    for c in cosine_columns:
+        df = df[(df[c] > 0) & (df[c] < 1)]
+    
+    agg_exprs = {col: F.mean(col).alias(col) for col in cosine_columns}
+    all_columns = df.columns
+    df = df.groupBy("id").agg(*agg_exprs.values(), *[F.first(col).alias(col) for col in all_columns if col not in cosine_columns and col!="id"])
+    return df
+    
+def create_test_data(df):
+    fields=["math","physics","medicine","economy","humanities","teaching","food","computer"]
+    for f in fields:
+        df=compute_cosine(df,f)
+    total_result=compute_avg_cosine_for_all_columns(df)
+    return total_result
+
+total_df_test=create_test_data(filtered_profiles)
+cosine_columns= [col for col in total_df_test.columns if "cosine" in col]
+selected_columns = cosine_columns + ["id"]+["field"]
+total_df_test = total_df_test.select(selected_columns)
+print(total_df_test.count)  
+
+
+```
+# step 5 - Train and Predict:
+
+We perform a training and a test for each general topic (a total of 8 times). We do this separation because we want to allow certain records to belong to more than one number of labels independently.
+ (For example, allow a person who is involved in mathematics and computer science to be part of the general subjects of mathematics, computers and even education, since through the knowledge he has acquired, perhaps he can be interested in teaching).
+We used RandomForestRegressor for training and prediction because in homework 2 question 4 it worked well on a similar task where we used cosine similraity explanatory variables
+
+
+```bash
+from pyspark.ml.regression import RandomForestRegressor
+from pyspark.ml.feature import VectorAssembler
+from pyspark.sql.functions import round
+from functools import reduce
+
+def stay_relevant_columns(df):
+    columns_to_stay = [col for col in df.columns if 'cosine' in col or 'id' in col or 'labels' in col]
+    total_result=df[columns_to_stay]
+    return total_result
+
+
+def train_and_test(train_df,test_df,cosine_column):
+    
+    assembler = VectorAssembler(inputCols=[cosine_column], outputCol="features")
+    train_df = assembler.transform(train_df)
+    test_df = assembler.transform(test_df)
+
+    rf = RandomForestRegressor(featuresCol="features", labelCol="labels", numTrees=100)
+    rf_model = rf.fit(train_df)
+
+    predictions = rf_model.transform(test_df)
+
+    substring = cosine_column[len("cosine_sim_"):]
+    substring = cosine_column.split("cosine_sim_")[1]
+    
+    predictions = predictions.withColumn(substring, round(col("prediction")))
+    columns_to_drop = ["prediction", "features"]
+    predictions = predictions.drop(*columns_to_drop)
+    return predictions
+
+total_df_test=total_df_test.dropna()
+columns_to_stay = [col for col in total_df_test.columns if 'cosine' in col or 'id' in col or "field" in col]
+total_df_test = total_df_test[columns_to_stay]
+
+math_rel=stay_relevant_columns(math)
+Physics_rel=stay_relevant_columns(Physics)
+medicine_rel=stay_relevant_columns(medicine)
+marketing_economics_rel=stay_relevant_columns(marketing_economics)
+social_sciences_rel=stay_relevant_columns(social_sciences)
+teaching_rel=stay_relevant_columns(teaching)
+food_rel=stay_relevant_columns(food)
+computer_rel=stay_relevant_columns(computer)
+math_pred=train_and_test(math_rel,total_df_test["id","cosine_sim_math","field"],"cosine_sim_math")
+
+physics_pred=train_and_test(Physics_rel,total_df_test["id","cosine_sim_physics"],"cosine_sim_physics")
+
+medicine_pred=train_and_test(medicine_rel,total_df_test["id","cosine_sim_medicine"],"cosine_sim_medicine")
+
+marketing_economics_pred=train_and_test(marketing_economics_rel,total_df_test["id","cosine_sim_economy"],"cosine_sim_economy")
+
+social_sciences_pred=train_and_test(social_sciences_rel,total_df_test["id","cosine_sim_humanities"],"cosine_sim_humanities")
+
+teaching_pred=train_and_test(teaching_rel,total_df_test["id","cosine_sim_teaching"],"cosine_sim_teaching")
+
+food_pred=train_and_test(food_rel,total_df_test["id","cosine_sim_food"],"cosine_sim_food")
+
+computers_pred=train_and_test(computer_rel,total_df_test["id","cosine_sim_computer"],"cosine_sim_computer")
+
+
+```
+# step 6 - Results:
+We will present an example from the table that matches general subjects to a person according to his educaiton.field:
+
+
+In the above table, where there is a 1, it means that we want to show that person courses in the relevant columns, and a 0 means that we do not want to show him the courses on these subjects.
+
+The code that appears groups all the data into one table and helps us present the results in a readable and understandable way
+```bash
+
+from functools import reduce
+from pyspark.sql import DataFrame
+dfs = [math_pred, physics_pred, medicine_pred, marketing_economics_pred, social_sciences_pred,teaching_pred,food_pred,computers_pred]
+
+# Define the join condition
+join_condition = "id"
+
+# Perform a series of left joins to combine the DataFrames
+combined_df = reduce(lambda df1, df2: df1.join(df2, on=join_condition, how='left'), dfs)
+
+# Show the combined DataFrame
+combined_df=combined_df.select("id", "field","math","physics","medicine","economy","teaching","food","computer")
+combined_df.display()
+
+
+
+```
+# step 7 - Evaluate our results:
+
+We calculated F1 on the training and validation data (80-20 split) the results are below:
+
+
+
+Code for train data evaluation:
+```bash
+
+
+
+from pyspark.ml.regression import RandomForestRegressor
+from pyspark.ml.feature import VectorAssembler
+from pyspark.sql.functions import round
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+
+def compute_f1(df,title):
+  evaluator = MulticlassClassificationEvaluator(labelCol='labels', predictionCol=title, metricName='f1')
+
+  # Step 2: Compute F1 score
+  f1_score = evaluator.evaluate(df)
+  print("F1 Score:", f1_score)
+
+def stay_relevant_columns(df):
+    columns_to_stay = [col for col in df.columns if 'cosine' in col or 'id' in col or 'labels' in col]
+    total_result=df[columns_to_stay]
+    return total_result
+
+
+def train_and_test(train_df,test_df,cosine_column):
+    
+    assembler = VectorAssembler(inputCols=[cosine_column], outputCol="features")
+    train_df = assembler.transform(train_df)
+    test_df = assembler.transform(test_df)
+
+    rf = RandomForestRegressor(featuresCol="features", labelCol="labels", numTrees=100)
+    rf_model = rf.fit(train_df)
+
+    predictions = rf_model.transform(test_df)
+
+    substring = cosine_column[len("cosine_sim_"):]
+    substring = cosine_column.split("cosine_sim_")[1]
+
+    predictions = predictions.withColumn(substring, round(col("prediction")))
+    predictions = predictions.drop("features")
+
+    print("f1 score on "+substring)
+    compute_f1(predictions,substring)
+
+total_df_test=total_df_test.dropna()
+columns_to_stay = [col for col in total_df_test.columns if 'cosine' in col or 'id' in col]
+total_df_test = total_df_test[columns_to_stay]
+
+math_rel=stay_relevant_columns(math)
+Physics_rel=stay_relevant_columns(Physics)
+medicine_rel=stay_relevant_columns(medicine)
+marketing_economics_rel=stay_relevant_columns(marketing_economics)
+social_sciences_rel=stay_relevant_columns(social_sciences)
+teaching_rel=stay_relevant_columns(teaching)
+food_rel=stay_relevant_columns(food)
+computer_rel=stay_relevant_columns(computer)
+
+math_pred=train_and_test(math_rel,math_rel,"cosine_sim_math")
+
+physics_pred=train_and_test(Physics_rel,Physics_rel,"cosine_sim_physics")
+
+medicine_pred=train_and_test(medicine_rel,medicine_rel,"cosine_sim_medicine")
+
+marketing_economics_pred=train_and_test(marketing_economics_rel,marketing_economics_rel,"cosine_sim_economy")
+
+social_sciences_pred=train_and_test(social_sciences_rel,social_sciences_rel,"cosine_sim_humanities")
+
+teaching_pred=train_and_test(teaching_rel,teaching_rel,"cosine_sim_teaching")
+
+food_pred=train_and_test(food_rel,food_rel,"cosine_sim_food")
+
+computers_pred=train_and_test(computer_rel,computer_rel,"cosine_sim_computer")
+
+
+
+```
+Code for validation data evaluation:
+```bash
+
+from pyspark.ml.regression import RandomForestRegressor
+from pyspark.ml.feature import VectorAssembler
+from pyspark.sql.functions import round
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+
+def compute_f1(df,title):
+  evaluator = MulticlassClassificationEvaluator(labelCol='labels', predictionCol=title, metricName='f1')
+
+  # Step 2: Compute F1 score
+  f1_score = evaluator.evaluate(df)
+  df.show()
+  print("F1 Score:", f1_score)
+
+def stay_relevant_columns(df):
+    columns_to_stay = [col for col in df.columns if 'cosine' in col or 'id' in col or 'labels' in col]
+    total_result=df[columns_to_stay]
+    return total_result
+
+
+def train_and_test(train_df,test_df,cosine_column):
+    
+    assembler = VectorAssembler(inputCols=[cosine_column], outputCol="features")
+    train_df = assembler.transform(train_df)
+    test_df = assembler.transform(test_df)
+
+    rf = RandomForestRegressor(featuresCol="features", labelCol="labels", numTrees=100)
+    rf_model = rf.fit(train_df)
+
+    predictions = rf_model.transform(test_df)
+
+    substring = cosine_column[len("cosine_sim_"):]
+    substring = cosine_column.split("cosine_sim_")[1]
+
+    predictions = predictions.withColumn(substring, round(col("prediction")))
+    predictions = predictions.drop("features")
+
+    print("f1 score on "+substring)
+    compute_f1(predictions,substring)
+
+total_df_test=total_df_test.dropna()
+columns_to_stay = [col for col in total_df_test.columns if 'cosine' in col or 'id' in col]
+total_df_test = total_df_test[columns_to_stay]
+
+math_rel=stay_relevant_columns(math)
+Physics_rel=stay_relevant_columns(Physics)
+medicine_rel=stay_relevant_columns(medicine)
+marketing_economics_rel=stay_relevant_columns(marketing_economics)
+social_sciences_rel=stay_relevant_columns(social_sciences)
+teaching_rel=stay_relevant_columns(teaching)
+food_rel=stay_relevant_columns(food)
+computer_rel=stay_relevant_columns(computer)
+
+train_math, test_math = math_rel.randomSplit([0.8, 0.2], seed=55) 
+math_pred=train_and_test(train_math,test_math,"cosine_sim_math")
+
+train_physics, test_physics = Physics_rel.randomSplit([0.8, 0.2], seed=55) 
+physics_pred=train_and_test(train_physics,test_physics,"cosine_sim_physics")
+
+train_medicine, test_medicine = medicine_rel.randomSplit([0.8, 0.2], seed=55) 
+medicine_pred=train_and_test(train_medicine,test_medicine,"cosine_sim_medicine")
+
+train_marketing_economics, test_marketing_economics =  marketing_economics_rel.randomSplit([0.8, 0.2], seed=55) 
+marketing_economics_pred=train_and_test(train_marketing_economics,test_marketing_economics,"cosine_sim_economy")
+
+train_social_sciences ,test_social_sciences =  social_sciences_rel.randomSplit([0.8, 0.2], seed=55) 
+social_sciences_pred=train_and_test(train_social_sciences,test_social_sciences,"cosine_sim_humanities")
+
+train_teaching, test_teaching =  teaching_rel.randomSplit([0.8, 0.2], seed=55) 
+teaching_pred=train_and_test(train_teaching,test_teaching,"cosine_sim_teaching")
+
+train_food, test_food =  food_rel.randomSplit([0.8, 0.2], seed=55) 
+food_pred=train_and_test(train_food,test_food,"cosine_sim_food")
+
+train_computer, test_computer =  computer_rel.randomSplit([0.8, 0.2], seed=55) 
+computers_pred=train_and_test(train_computer,test_computer,"cosine_sim_computer")
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+  
+
 
 
 
