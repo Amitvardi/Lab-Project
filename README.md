@@ -48,8 +48,10 @@ We will distinguish between two types of records:
 
 1. Records that can be unequivocally determined to which general subject they belong
  (for example if 'medicine= 'Education.field ), it obviously belongs to the general subject of medicine.
-  We will also add to these records a number of topics included in medicine (for example if 'Education.field'=doctor,nurse.. )
-  .
+  We will also add to these records a number of topics included in medicine (for example if 'Education.field'=doctor,nurse.. ).
+
+In the picture is another example of the way we create type 1 records:
+
 | <img src="python\photos\economy_example.jpeg" width=35%>| 
 
 
