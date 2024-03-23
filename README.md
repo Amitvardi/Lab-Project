@@ -50,6 +50,7 @@ We will distinguish between two types of records:
  (for example if 'medicine= 'Education.field ), it obviously belongs to the general subject of medicine.
   We will also add to these records a number of topics included in medicine (for example if 'Education.field'=doctor,nurse.. )
   .
+  ![Economy example](C:\Users\amit\Desktop\githb_project\Lab-Projec\python\photos\economy_example.jpeg)
 
 2. Records that cannot be concluded unequivocally and therefore a learning process must be carried out in order to determine which general subject they belong to (for example if 'pharmacist= 'Education.field we understand for sure that this is part of a general subject of medicine but in order for our system to understand this a learning process must be carried out which we will detail later).
 We didn't classify the pharmacist as a type 1 record because we can't think of all the subjects in the existing domain, and that's why our model has to use a learning process to understand who those subjects are
