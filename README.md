@@ -344,7 +344,7 @@ print(total_df_test.count)
 
 
 ```
-# step 5 - Train and Predict:
+# step 6 - Train and Predict:
 
 We perform a training and a test for each general topic (a total of 8 times). We do this separation because we want to allow certain records to belong to more than one number of labels independently.
  (For example, allow a person who is involved in mathematics and computer science to be part of the general subjects of mathematics, computers and even education, since through the knowledge he has acquired, perhaps he can be interested in teaching).
@@ -412,7 +412,7 @@ computers_pred=train_and_test(computer_rel,total_df_test["id","cosine_sim_comput
 
 
 ```
-# step 6 - Results:
+# step 7 - Results:
 We will present an example from the table that matches general subjects to a person according to his educaiton.field:
 
 
@@ -438,7 +438,7 @@ combined_df.display()
 
 
 ```
-# step 7 - Evaluate our results:
+# step 8 - Evaluate our results:
 
 We calculated F1 on the training and validation data (80-20 split) the results are below:
 
@@ -598,6 +598,110 @@ food_pred=train_and_test(train_food,test_food,"cosine_sim_food")
 train_computer, test_computer =  computer_rel.randomSplit([0.8, 0.2], seed=55) 
 computers_pred=train_and_test(train_computer,test_computer,"cosine_sim_computer")
 
+
+
+```
+# step 9 - scrapping Coursera website:
+
+We scraped the Coursera website according to the general subjects we tested. First we checked a large amount of courses on which we performed scraping and came to the conclusion that it would be better to show the user only selected and recommended courses, therefore we classified the site according to the most recommended courses and for each field we took the three most recommended courses Below are the results and the code that performs the scraping:
+
+```bash
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import pandas as pd
+
+
+def insert_more_pages(org_path,num_of_pages):
+    total_pathes=[]
+    for i in range(num_of_pages):
+        if i==0:
+            total_pathes.append(org_path)
+        else:
+            total_pathes.append(org_path+"&page="+str(i)+"&sortBy=BEST_MATCH")
+    return total_pathes
+
+def itraetion(course_param,param):
+    total_list_of_param=[]
+    for element in course_param:
+        if param=="titles":
+            total_list_of_param.append(element.text)
+        elif param=="ratings":
+            total_list_of_param.append(element.text)
+        else:
+            total_list_of_param.append(element.text)
+    return total_list_of_param
+
+def itreate_and_get_data(pages_pathes,driver):
+    titles,skills,ratings,level=[],[],[],[]
+    for path in pages_pathes:
+        driver.get(path)
+        course_title = driver.find_elements(By.CLASS_NAME, "cds-CommonCard-title")
+        course_skills= driver.find_elements(By.CLASS_NAME,"cds-Typography-base")
+        course_ratings= driver.find_elements(By.CLASS_NAME,"cds-CommonCard-ratings")
+        titles.extend(itraetion(course_title,"titles"))
+        skills.extend(itraetion(course_skills,"skills"))
+        ratings.extend(itraetion(course_ratings,"ratings"))
+    return titles,skills,ratings
+
+def delete_above3(courses_dict):
+    for key, lists in courses_dict.items():
+        new_values = []
+        for old_list in lists:
+            truncated_list = old_list[:3]  
+            new_values.append(truncated_list)
+        courses_dict[key] = new_values 
+    return courses_dict
+
+
+def save_as_xlsx(courses_dict):
+    top3_courses=delete_above3(courses_dict)
+    file_names=["math","Physics","medicine","economy","humanities","teaching","food","computer"]
+    for index,(p,value) in enumerate(top3_courses.items()):
+        if p=="https://www.coursera.org/search?query=humanities" or p=="https://www.coursera.org/search?query=food":
+            empty_list = ["empty"] * len(value[0])
+            df = pd.DataFrame({
+                "Course Titles": value[0],
+                "Skills you'll gain": empty_list,
+                "Course Rating": value[2]
+            })
+        else:
+            df = pd.DataFrame({
+            "Course Titles": value[0],
+            "Skills you'll gain": value[1],
+            "Course Rating": value[2]
+            })
+        index = p.find('=')
+        name = p[index + 1:]
+        df.to_excel("C:/Users/amit/PycharmProjects/gradio/Lib/site-packages/scrapping_data/"+name+".xlsx", index=False)
+
+
+if __name__ == '__main__':
+    path = "C:/Users/amit/PycharmProjects/gradio/Lib/site-packages/chromedriver.exe"
+    num_of_pages=3
+    chrome_options = Options()
+    service = Service(path)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    pathes=["https://www.coursera.org/search?query=math","https://www.coursera.org/search?query=physics",
+            "https://www.coursera.org/search?query=medicine","https://www.coursera.org/search?query=economy",
+            "https://www.coursera.org/search?query=humanities","https://www.coursera.org/search?query=teaching",
+            "https://www.coursera.org/search?query=food","https://www.coursera.org/search?query=computers"
+            ]
+
+
+    dic_field_to_data={}
+    for p in pathes:
+        print(p)
+        pages_pathes=insert_more_pages(p,num_of_pages)
+        dic_field_to_data[p]= itreate_and_get_data(pages_pathes,driver)
+
+    save_as_xlsx(dic_field_to_data)
 
 
 
