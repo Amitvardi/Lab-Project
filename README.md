@@ -447,6 +447,18 @@ combined_df.display()
 We calculated F1 on the training and validation data (80-20 split) the results are below:
 
 
+| subject | f1 score validation | f1 score train |
+| -------- | -------- | -------- |
+| math | 0.818 | 0.819 |
+| physics | 0.723 | 0.701 |
+| medicine | 0.692 | 0.699 |
+| economy | 0.904 | 0.902 |
+| humanities | 0.729 | 0.721 |
+| teaching | 0.803 | 0.796 |
+| food | 0.796 | 0.801 |
+| computer | 0.865 | 0.868 |
+
+
 
 Code for train data evaluation:
 ```bash
