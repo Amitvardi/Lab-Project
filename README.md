@@ -431,12 +431,20 @@ We will present an example from the table that matches general subjects to a per
 | 25930  | real estate                                | 0    | 0       | 0        | 1       | 0          | 0        | 0    | 0        |
 | 25899  | mathematics                                | 1    | 0       | 0        | 0       | 0          | 0        | 0    | 0        |
 | 3009  | computer science                           | 1    | 0       | 0        | 0       | 0          | 1        | 0    | 1        |
-| 31503  | data science                                | 1    | 1       | 0        | 0       | 0          | 0        | 0    | 1        |
+| 31503  | data science                                | 1    | 0       | 0        | 0       | 0          | 0        | 0    | 1        |
 | 31832  | drama and dramatics/theatre arts, general  | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
 
 
 
 In the above table, where there is a 1, it means that we want to show that person courses in the relevant columns, and a 0 means that we do not want to show him the courses on these subjects.
+
+As you can see, some of the fields have a unique purpose and therefore only one general profession is adapted to them (for example, for the audio field, courses will be offered only on the subject of computers, in the same way, for the web desing field, courses will be offered only on the subject of computers, and for the real estate field, courses will be offered only on the subject of economics).
+
+But this is not the case in all fields, some of the fields may be more general and contain within them a more diverse number of general subjects: such as computer science which may contain a lot of mathematics, it can be taken into the field of teaching and of course into the field of computers.
+
+Another good example is business administration, management and operations, which is a general field that may contain different fields from the subjects of economy, humanities, and computers.
+
+Also, our model is not perfect, the field English - creative writing contains a general topic from humanities and teaching that can indeed describe this field, but in addition it is written that the field of math describes it that is wrong which can result from the similarity between math and English 
 
 The code that appears groups all the data into one table and helps us present the results in a readable and understandable way
 ```bash
