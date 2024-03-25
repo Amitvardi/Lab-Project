@@ -419,20 +419,21 @@ computers_pred=train_and_test(computer_rel,total_df_test["id","cosine_sim_comput
 # step 7 - Results:
 We will present an example from the table that matches general subjects to a person according to his educaiton.field:
 
-| id | field | math | physics | medicine | economy | humanities | teaching | food | computer |
-| -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
-| 130 | business administration, management and operations | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 1 |
-| 241 | communication, general | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
-| 299 | accounting and business/management | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 |
-| 965 | photography | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
-| 187915 | engineering | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 1 |
-| 176535 | industrial and organizational psychology | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
-| 38996 | web design | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| 25930 | real estate | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
-| 25899 | mathematics | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 54328 | none | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 31503 | agriculture | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0 |
-| 31832 | drama and dramatics/theatre arts, general | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
+| id     | field                                       | math | physics | medicine | economy | humanities | teaching | food | computer |
+| ------ | ------------------------------------------- | ---- | ------- | -------- | ------- | ---------- | -------- | ---- | -------- |
+| 130    | business administration, management and operations | 0    | 0       | 0        | 1       | 1          | 0        | 0    | 1        |
+| 241    | communication, general                     | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
+| 299    | accounting and business/management         | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 1        |
+| 965    | photography                                | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
+| 187915 | engineering                                | 1    | 1       | 0        | 0       | 0          | 1        | 0    | 1        |
+| 176535 | industrial and organizational psychology  | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
+| 38996  | web design                                 | 0    | 0       | 0        | 0       | 0          | 0        | 0    | 1        |
+| 25930  | real estate                                | 0    | 0       | 0        | 1       | 0          | 0        | 0    | 0        |
+| 25899  | mathematics                                | 1    | 0       | 0        | 0       | 0          | 0        | 0    | 0        |
+| 54328  | none                                       | 0    | 0       | 0        | 0       | 0          | 0        | 0    | 0        |
+| 31503  | agriculture                                | 0    | 1       | 0        | 1       | 1          | 0        | 1    | 0        |
+| 31832  | drama and dramatics/theatre arts, general  | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
+
 
 
 In the above table, where there is a 1, it means that we want to show that person courses in the relevant columns, and a 0 means that we do not want to show him the courses on these subjects.
