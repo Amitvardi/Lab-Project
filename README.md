@@ -419,6 +419,21 @@ computers_pred=train_and_test(computer_rel,total_df_test["id","cosine_sim_comput
 # step 7 - Results:
 We will present an example from the table that matches general subjects to a person according to his educaiton.field:
 
+| id | field | math | physics | medicine | economy | humanities | teaching | food | computer |
+| -------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
+| 130 | business administration, management and operations | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 1 |
+| 241 | communication, general | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
+| 299 | accounting and business/management | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 |
+| 965 | photography | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
+| 187915 | engineering | 1 | 1 | 0 | 0 | 0 | 1 | 0 | 1 |
+| 176535 | industrial and organizational psychology | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
+| 38996 | web design | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| 25930 | real estate | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| 25899 | mathematics | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 54328 | none | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 31503 | agriculture | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0 |
+| 31832 | drama and dramatics/theatre arts, general | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
+
 
 In the above table, where there is a 1, it means that we want to show that person courses in the relevant columns, and a 0 means that we do not want to show him the courses on these subjects.
 
@@ -619,14 +634,26 @@ computers_pred=train_and_test(train_computer,test_computer,"cosine_sim_computer"
 ```
 # step 9 - scrapping Coursera website:
 
-We scraped the Coursera website according to the general subjects we tested. We scraped the Coursera website according to the general subjects we tested. Let's see the top three courses from each general subject:
+We scraped the Coursera website according to the general subjects we tested. We will see an example of the top three courses from some of the general subjects.:
+
+Economy Courses:
 
 | Course Titles | Skills you'll gain | Course Rating |
 | -------- | -------- | -------- |
 | Financial Markets | Finance, Investment Management, Risk Management, Banking, Behavioral Economics, Critical Thinking, Decision Making, Financial Analysis, Innovation, Regulations and Compliance, Leadership and Management | 4.8(27K reviews)|
 | Microeconomics Principles | Behavioral Economics, Decision Making, Market Research, Market Analysis, Strategy, Problem Solving, Cost Accounting, Data Analysis, Financial Management | 4.8(2.9K reviews) |
 | Economics of Money and Banking | Banking, Finance | 4.9(1.6K reviews)
+
+
+computer courses: 
+
+| Course Titles | Skills you'll gain | Course Rating |
+| -------- | -------- | -------- |
+| Introduction to Computers and Office Productivity Software | Computer Graphics, Computer Programming, Graphics Software, Computer Programming Tools, Microsoft Excel, System Software, Data Analysis Software, Software As A Service, Spreadsheet Software, Computer Graphic Techniques | 4.7(1.6K reviews)|
+| Google IT Support | Computer Networking, Network Architecture, Network Model, Networking Hardware, Network Analysis, Computer Architecture, Critical Thinking, Problem Solving, Communication, Human Computer Interaction, Network Security, Linux, System Security, Cloud Computing, Computer Programming, Customer Support, Cryptography, Leadership and Management, Operating Systems | 4.8(185K reviews) |
+| Computer Hardware and Software | Computer Architecture, Computer Networking, Networking Hardware, Computer Security Incident Management, Human Computer Interaction, Operating Systems, Operational Analysis, Security Software, Software Security, Software Testing | 4.4(117 reviews) |
 ```bash
+
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
