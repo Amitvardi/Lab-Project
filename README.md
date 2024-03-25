@@ -421,17 +421,17 @@ We will present an example from the table that matches general subjects to a per
 
 | id     | field                                       | math | physics | medicine | economy | humanities | teaching | food | computer |
 | ------ | ------------------------------------------- | ---- | ------- | -------- | ------- | ---------- | -------- | ---- | -------- |
-| 130    | business administration, management and operations | 0    | 0       | 0        | 1       | 1          | 0        | 0    | 1        |
-| 241    | communication, general                     | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
-| 299    | accounting and business/management         | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 1        |
+| 130    | business administration, management and operations | 0    | 0       | 0        | 1       | 1          | 0        | 0    | 1 |
+| 6684   | audio                                       | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 1        |
+| 299    | english - creative writing                  | 1    | 0       | 0        | 0       | 1          | 1       | 0    | 0        |
 | 965    | photography                                | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
 | 187915 | engineering                                | 1    | 1       | 0        | 0       | 0          | 1        | 0    | 1        |
 | 176535 | industrial and organizational psychology  | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
 | 38996  | web design                                 | 0    | 0       | 0        | 0       | 0          | 0        | 0    | 1        |
 | 25930  | real estate                                | 0    | 0       | 0        | 1       | 0          | 0        | 0    | 0        |
 | 25899  | mathematics                                | 1    | 0       | 0        | 0       | 0          | 0        | 0    | 0        |
-| 54328  | none                                       | 0    | 0       | 0        | 0       | 0          | 0        | 0    | 0        |
-| 31503  | agriculture                                | 0    | 1       | 0        | 1       | 1          | 0        | 1    | 0        |
+| 3009  | computer science                           | 1    | 0       | 0        | 0       | 0          | 1        | 0    | 1        |
+| 31503  | data science                                | 1    | 1       | 0        | 0       | 0          | 0        | 0    | 1        |
 | 31832  | drama and dramatics/theatre arts, general  | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
 
 
