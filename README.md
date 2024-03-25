@@ -619,8 +619,13 @@ computers_pred=train_and_test(train_computer,test_computer,"cosine_sim_computer"
 ```
 # step 9 - scrapping Coursera website:
 
-We scraped the Coursera website according to the general subjects we tested. First we checked a large amount of courses on which we performed scraping and came to the conclusion that it would be better to show the user only selected and recommended courses, therefore we classified the site according to the most recommended courses and for each field we took the three most recommended courses Below are the results and the code that performs the scraping:
+We scraped the Coursera website according to the general subjects we tested. We scraped the Coursera website according to the general subjects we tested. Let's see the top three courses from each general subject:
 
+| Course Titles | Skills you'll gain | Course Rating |
+| -------- | -------- | -------- |
+| Financial Markets | Finance, Investment Management, Risk Management, Banking, Behavioral Economics, Critical Thinking, Decision Making, Financial Analysis, Innovation, Regulations and Compliance, Leadership and Management | 4.8(27K reviews)|
+| Microeconomics Principles | Behavioral Economics, Decision Making, Market Research, Market Analysis, Strategy, Problem Solving, Cost Accounting, Data Analysis, Financial Management | 4.8(2.9K reviews) |
+| Economics of Money and Banking | Banking, Finance | 4.9(1.6K reviews)
 ```bash
 
 from selenium import webdriver
