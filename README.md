@@ -422,7 +422,7 @@ We will present an example from the table that matches general subjects to a per
 | id     | field                                       | math | physics | medicine | economy | humanities | teaching | food | computer |
 | ------ | ------------------------------------------- | ---- | ------- | -------- | ------- | ---------- | -------- | ---- | -------- |
 | 130    | business administration, management and operations | 0    | 0       | 0        | 1       | 1          | 0        | 0    | 1 |
-| 6684   | audio                                       | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 1        |
+| 6684   | audio                                       | 0    | 0       | 0        | 0       | 0         | 0        | 0    | 1        |
 | 299    | english - creative writing                  | 1    | 0       | 0        | 0       | 1          | 1       | 0    | 0        |
 | 965    | photography                                | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
 | 187915 | engineering                                | 1    | 1       | 0        | 0       | 0          | 1        | 0    | 1        |
