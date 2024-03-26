@@ -419,7 +419,7 @@ computers_pred=train_and_test(computer_rel,total_df_test["id","cosine_sim_comput
 # step 7 - Results:
 We will present an example from the table that matches general subjects to a person according to his educaiton.field:
 
-| id     | field                                       | math | physics | medicine | economy | humanities | teaching | food | computer |
+| id     | field                                       | math |physics | medicine | economy | humanities | teaching | food | computer |
 | ------ | ------------------------------------------- | ---- | ------- | -------- | ------- | ---------- | -------- | ---- | -------- |
 | 130    | business administration, management and operations | 0    | 0       | 0        | 1       | 1          | 0        | 0    | 1 |
 | 6684   | audio                                       | 0    | 0       | 0        | 0       | 0         | 0        | 0    | 1        |
@@ -430,8 +430,8 @@ We will present an example from the table that matches general subjects to a per
 | 38996  | web design                                 | 0    | 0       | 0        | 0       | 0          | 0        | 0    | 1        |
 | 25930  | real estate                                | 0    | 0       | 0        | 1       | 0          | 0        | 0    | 0        |
 | 25899  | mathematics                                | 1    | 0       | 0        | 0       | 0          | 0        | 0    | 0        |
-| 3009  | computer science                           | 1    | 0       | 0        | 0       | 0          | 1        | 0    | 1        |
-| 31503  | data science                                | 1    | 0       | 0        | 0       | 0          | 0        | 0    | 1        |
+| 3009  | computer science                           | 1    | 1       | 0        | 0       | 0          | 1        | 0    | 1        |
+| 31503  | data science                                | 1    | 1       | 0        | 0       | 0          | 0        | 0    | 1        |
 | 31832  | drama and dramatics/theatre arts, general  | 0    | 0       | 0        | 0       | 1          | 0        | 0    | 0        |
 
 
@@ -444,7 +444,8 @@ But this is not the case in all fields, some of the fields may be more general a
 
 Another good example is business administration, management and operations, which is a general field that may contain different fields from the subjects of economy, humanities, and computers.
 
-Also, our model is not perfect, the field English - creative writing contains a general topic from humanities and teaching that can indeed describe this field, but in addition it is written that the field of math describes it that is wrong which can result from the similarity between math and English 
+Also, our model is not perfect, the field English - creative writing contains a general topic from humanities and teaching that can indeed describe this field, but in addition it is written that the field of math describes it that is wrong which can result from the similarity between math and English, 
+The same goes for data science. The system recommends physics courses for data science, apparently from the similarity of the word science to physics.
 
 The code that appears groups all the data into one table and helps us present the results in a readable and understandable way
 ```bash
