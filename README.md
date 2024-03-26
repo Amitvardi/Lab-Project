@@ -438,7 +438,7 @@ We will present an example from the table that matches general subjects to a per
 
 In the above table, where there is a 1, it means that we want to show that person courses in the relevant columns, and a 0 means that we do not want to show him the courses on these subjects.
 
-As you can see, some of the fields have a unique purpose and therefore only one general profession is adapted to them (for example, for the audio field, courses will be offered only on the subject of computers, in the same way, for the web desing field, courses will be offered only on the subject of computers, and for the real estate field, courses will be offered only on the subject of economics).
+As you can see, some of the fields have a unique purpose and therefore only one general subject is adapted to them (for example, for the audio field, courses will be offered only on the subject of computers, in the same way, for the web desing field, courses will be offered only on the subject of computers, and for the real estate field, courses will be offered only on the subject of economics).
 
 But this is not the case in all fields, some of the fields may be more general and contain within them a more diverse number of general subjects: such as computer science which may contain a lot of mathematics, it can be taken into the field of teaching and of course into the field of computers.
 
@@ -643,7 +643,7 @@ computers_pred=train_and_test(train_computer,test_computer,"cosine_sim_computer"
 ```
 # step 9 - scrapping Coursera website:
 
-We scraped the Coursera website according to the general subjects we tested. We will see an example of the top three courses from some of the general subjects.:
+We scraped the Coursera website according to the general subjects we tested. let's see an example of the top three courses from some of the general subjects.:
 
 Economy Courses:
 
@@ -654,14 +654,24 @@ Economy Courses:
 | Economics of Money and Banking | Banking, Finance | 4.9(1.6K reviews)
 
 
-computer courses: 
+Computer courses: 
 
 | Course Titles | Skills you'll gain | Course Rating |
 | -------- | -------- | -------- |
 | Introduction to Computers and Office Productivity Software | Computer Graphics, Computer Programming, Graphics Software, Computer Programming Tools, Microsoft Excel, System Software, Data Analysis Software, Software As A Service, Spreadsheet Software, Computer Graphic Techniques | 4.7(1.6K reviews)|
 | Google IT Support | Computer Networking, Network Architecture, Network Model, Networking Hardware, Network Analysis, Computer Architecture, Critical Thinking, Problem Solving, Communication, Human Computer Interaction, Network Security, Linux, System Security, Cloud Computing, Computer Programming, Customer Support, Cryptography, Leadership and Management, Operating Systems | 4.8(185K reviews) |
 | Computer Hardware and Software | Computer Architecture, Computer Networking, Networking Hardware, Computer Security Incident Management, Human Computer Interaction, Operating Systems, Operational Analysis, Security Software, Software Security, Software Testing | 4.4(117 reviews) |
+
+
+Teaching courses:
+
+| Course Titles | Skills you'll gain | Course Rating |
+| -------- | -------- | -------- |
+| Foundations of Teaching for Learning: Being a Teacher |Professional Development | 4.6(875 reviews)|
+| Foundations of Teaching for Learning: Curriculum | Planning | 4.6(386 reviews) |
+| Foundations of Teaching for Learning: Introduction | Human Learning, Planning | 4.6(762 reviews) |
 ```bash
+
 
 
 from selenium import webdriver
