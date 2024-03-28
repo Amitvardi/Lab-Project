@@ -649,8 +649,8 @@ computers_pred=train_and_test(train_computer,test_computer,"cosine_sim_computer"
 # step 9 - scrapping Coursera website:
 
 We scrapped the Coursera website according to the general subjects we tested.
-we collect  for each general subject the first 8 pages each page contain 12 courses, as a result 12*8=96 courses for each subject.
-we did this process for 8 courses , overall 96*8=768 courses.
+we collect  for each general subject the first 8 pages each page contain 12 courses, as a result 12 X 8=96 courses for each subject.
+we did this process for 8 courses , overall 96 X 8=768 courses.
 
 As a result of the huge amount of courses we have collected, we have selected the top 3 courses from some of the general subjects for presentation purposes only.
 
