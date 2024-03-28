@@ -25,30 +25,30 @@ first define:
 
 Education.field- the key field under the column Education in linkedin/people table.
 
-General subject - the subject according to which we would like to classify the profiles, we will classify each record if it belongs to any subject and subject according to Education.field.
+General subject - the subject according to which we would like to classify the profiles.
 Examples of General subject:
 Mathematics, physics, education and more..
 
-Later for these general subjects we will collect courses on their subject.
+Later for these general subjects we will collect relevant courses.
 
 We will classify Education.field according to each General subject (for example, mathematics, philosophy, etc.).
 We will go over all the General subject and for each General subject we will create two types of labels:
 
-Label 1 - to which all the records that are under the general subject will belong.
+Label 1 -All records that belong to this general subject.
 
-Label 0 - records that belong to another general topic.
+Label 0 - All records that do not belong to this general subject.
 
 How will we categorize the data into the above labels?
 
-We run an example for the simplicity of the explanation, for example now we would like to classify to the general topic
+We run an example for the simplicity of the explanation, for example now we would like to classify the general topic
 "medicine" records to 0 or 1
 We distinguish between two types of records:
 
 1. Records that can be unequivocally determined to which general subject they belong
  (for example if 'Education.field=medicine ), it obviously belongs to the general subject of medicine.
-  We will also add to these records a number of topics included in medicine (for example if 'Education.field'=doctor,nurse.. ).
+  We will also add to these records a number of topics included in medicine (for example if 'Education.field' contain doctor,nurse.. ).
 
-In the picture is another example of the way we create type 1 records:
+In the picture is another example of the way we create type 1 records for the general subject Economy:
 
 | <img src="python\photos\economy_example.jpeg" width=35%>| 
 
@@ -58,20 +58,25 @@ We didn't classify the pharmacist as a type 1 record because we can't think of a
 
 For Type 1 records:
 
-Classified as label 1 if field. Education equivalent to the general subject being tested (for example, doctor).
-Classified to label 0 if field. Education is equivalent to another general subject (e.g. philosophy).
+Classified as label 1 if Education.field equivalent to the general subject being tested (for example, medicine).
+Classified to label 0 if Education.field is equivalent to another general subject (e.g. ecomomy).
 
 For type 2 records: 
 
-We will use a language model in order to embedd (present as a vector) the field. Education and the general subject
+We will use a language model in order to embedd (present as a vector) the Education.field and the general subject
 (e.g. medicine).
-We use Education.field and labels of type 1 records for the learning process in that way:
-We will compute cosine similarity between fields. Education and the general subject (medicine) presented as vectors,
-This result will be used as an explanatory variable. In this way we will train the model based on type 1 records
-We will use the trained model to classify type 2 records after embedding and cosine
- .similarity
 
-*Explaining the model intuitively: our model's goal it to classify type 2 records according to type 1 records, meaning that the analogy between type 1 records and the general subject will be good enough to include type 2 records
+Train:
+
+For type 1 records we will compute cosine similarity between Education.field and the general subject (medicine) presented as vectors.
+This result will be used as a training data.
+
+Predict:
+
+For type 2 records we will compute cosine similarity between Education.field and the general subject (medicine) presented as vectors.
+In order to predict the labels for type 2 records we will use the trained model.
+
+*Explaining the model intuitively: our model's goal it to classify type 2 records according to type 1 records, meaning that the analogy between type 1 records and the general subject will be good enough to include type 2 records.
 
 # code:
 
@@ -231,9 +236,9 @@ print(computer_profiles.count())
 ```
 # step 4 - creating type 1 records (the training data) and compute cosine similarity for each general subject:
 
-For each record, we calculated the cosine similarity between the education.field column and the general topic. At the end, we calculated an average of the cosine similarity values ​​for all the words belonging to that education.field on which we performed a split in step 2
+For each record, we calculated the cosine similarity between the education.field column and the general topic. At the end, we calculated an average of the cosine similarity values ​​for all the words that belong to that education.field on which we performed a split in step 2
 
-Then we prepared the records of type 1 by mixing the different tables and putting labels of 0 and 1 in the required places
+Then we prepared the records of type 1 by mixing the different subjects tables and putting labels of 0 and 1 in the required places
 ```bash
 
 import gensim.downloader as api
@@ -350,7 +355,7 @@ print(total_df_test.count)
 
 We perform a training and a test for each general topic (a total of 8 times). We do this separation because we want to allow certain records to belong to more than one number of labels independently.
  (For example, allow a person who is involved in mathematics and computer science to be part of the general subjects of mathematics, computers and even education, since through the knowledge he has acquired, perhaps he can be interested in teaching).
-We used RandomForestRegressor for training and prediction because in homework 2 question 4 it worked well on a similar task where we used cosine similraity explanatory variables.
+We used RandomForestRegressor for training and prediction because in homework 2 question 4 it worked well on a similar task where we used cosine similraity as explanatory variables.
 
 
 ```bash
@@ -467,9 +472,6 @@ combined_df.display()
 ```
 # step 8 - Evaluate our results:
 
-We calculated F1 on the training and validation data (80-20 split) the results are below:
-
-
 | subject | f1 score validation | f1 score train |
 | -------- | -------- | -------- |
 | math | 0.818 | 0.819 |
@@ -481,9 +483,10 @@ We calculated F1 on the training and validation data (80-20 split) the results a
 | food | 0.796 | 0.801 |
 | computer | 0.865 | 0.868 |
 
-
+The table describes f1 scores for the training and validation data (80-20 split), the f1 values ​​are relatively high and similar between training and validation, which indicates the success of the model in matching courses to LinkedIn users.
 
 Code for train data evaluation:
+We train on the training set and predict it then compute F1
 ```bash
 
 
@@ -559,6 +562,9 @@ computers_pred=train_and_test(computer_rel,computer_rel,"cosine_sim_computer")
 
 ```
 Code for validation data evaluation:
+
+We split the training data into 80% training set and 20% test set. We train on the training set and predict the test set.
+then we calculate F1
 ```bash
 
 from pyspark.ml.regression import RandomForestRegressor
@@ -642,7 +648,11 @@ computers_pred=train_and_test(train_computer,test_computer,"cosine_sim_computer"
 ```
 # step 9 - scrapping Coursera website:
 
-We scraped the Coursera website according to the general subjects we tested. let's see an example of the top three courses from some of the general subjects.:
+We scrapped the Coursera website according to the general subjects we tested.
+we collect  for each general subject the first 8 pages each page contain 12 courses, as a result 12*8=96 courses for each subject.
+we did this process for 8 courses , overall 96*8=768 courses.
+
+As a result of the huge amount of courses we have collected, we have selected the top 3 courses from some of the general subjects for presentation purposes only.
 
 Economy Courses:
 
@@ -749,7 +759,7 @@ def save_as_xlsx(courses_dict):
 
 if __name__ == '__main__':
     path = "C:/Users/amit/PycharmProjects/gradio/Lib/site-packages/chromedriver.exe"
-    num_of_pages=3
+    num_of_pages=8
     chrome_options = Options()
     service = Service(path)
     driver = webdriver.Chrome(service=service, options=chrome_options)
